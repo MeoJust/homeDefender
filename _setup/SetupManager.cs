@@ -1,0 +1,109 @@
+using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class SetupManager : MonoBehaviour
+{
+    [Header("BTNs")]
+    [SerializeField] Button _startBTN;
+    [SerializeField] Button _leftBTN;
+    [SerializeField] Button _rightBTN;
+    [SerializeField] Button _buyBTN;
+    [SerializeField] Button _takeBTN;
+    [SerializeField] Button _clearBTN;
+
+    [Header("TXTs")]
+    [SerializeField] TextMeshProUGUI _costTXT;
+    [SerializeField] TextMeshProUGUI _weaponNameTXT;
+
+    [Header("GO")]
+    [SerializeField] GameObject _buyPanel;
+    [SerializeField] GameObject _takePanel;
+
+    int _wpIdToShow = 0;
+    int[] _idsToPlay = new int[3];
+
+    Gun[] _guns;
+    GunSlot[] _gunSlots;
+
+    public Action ClearSlots;
+
+    void Start()
+    {
+        _startBTN.onClick.AddListener(StartDaGame);
+        _leftBTN.onClick.AddListener(() => SwitchWeapon(-1));
+        _rightBTN.onClick.AddListener(() => SwitchWeapon(1));
+        _takeBTN.onClick.AddListener(AddTheGun);
+        _clearBTN.onClick.AddListener(ClearGunSlots);
+
+        _guns = FindObjectsOfType<Gun>();
+        _gunSlots = FindObjectsOfType<GunSlot>();
+
+        HideWeapons();
+        ShowWeapon(_wpIdToShow);
+    }
+
+    void StartDaGame()
+    {
+        SceneSwitcher.Instance.SwitchScene(2);
+    }
+
+    void HideWeapons()
+    {
+        foreach (var gun in _guns)
+        {
+            gun.gameObject.SetActive(false);
+        }
+    }
+
+    void ShowWeapon(int id)
+    {
+        foreach (var gun in _guns)
+        {
+            if (gun.WpID == id)
+            {
+                gun.gameObject.SetActive(true);
+                _costTXT.text = gun.WpCost.ToString();
+                _weaponNameTXT.text = gun.WpName;
+            }
+        }
+    }
+
+    void SwitchWeapon(int multiplier)
+    {
+        _wpIdToShow += multiplier;
+
+        if (_wpIdToShow > _guns.Length - 1)
+        {
+            _wpIdToShow = 0;
+        }
+
+        if (_wpIdToShow < 0)
+        {
+            _wpIdToShow = _guns.Length - 1;
+        }
+
+        HideWeapons();
+        ShowWeapon(_wpIdToShow);
+    }
+
+    void AddTheGun()
+    {
+        foreach (var gunSlot in _gunSlots)
+        {
+            if (gunSlot.IsEmpty)
+            {
+                gunSlot.SetTheGun(_wpIdToShow);
+                _idsToPlay[gunSlot.Id] = _wpIdToShow;
+                SceneSwitcher.Instance.SetTheGoonz(_idsToPlay);
+                break;
+            }
+        }
+    }
+
+    void ClearGunSlots()
+    {
+        ClearSlots?.Invoke();
+    }
+}
