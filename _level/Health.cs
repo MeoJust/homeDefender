@@ -24,6 +24,16 @@ public class Health : MonoBehaviour
         }
     }
 
+    public void IsHitInHead(){
+        _maxHealth -= _player.GetComponentInChildren<Gun>().Damage * 2f;
+        print("!!HEAD!!");
+        print(_maxHealth);
+        if (_maxHealth <= 0)
+        {
+            Die();
+        }
+    }
+
     void Die()
     {
         _animator.SetInteger("animId", Random.Range(0, 3));
