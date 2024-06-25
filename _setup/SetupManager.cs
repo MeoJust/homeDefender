@@ -15,6 +15,7 @@ public class SetupManager : MonoBehaviour
 
     [Header("TXTs")]
     [SerializeField] TextMeshProUGUI _costTXT;
+    [SerializeField] TextMeshProUGUI _moneyTXT;
     [SerializeField] TextMeshProUGUI _weaponNameTXT;
 
     [Header("GO")]
@@ -42,6 +43,8 @@ public class SetupManager : MonoBehaviour
 
         HideWeapons();
         ShowWeapon(_wpIdToShow);
+
+        UpdateMoneyTXT();
     }
 
     void StartDaGame()
@@ -66,6 +69,17 @@ public class SetupManager : MonoBehaviour
                 gun.gameObject.SetActive(true);
                 _costTXT.text = gun.WpCost.ToString();
                 _weaponNameTXT.text = gun.WpName;
+
+                SetupGun setupGun = gun.GetComponent<SetupGun>();
+                if (!setupGun.IsSold)
+                {
+                    ShowBuyPanel();
+                    _buyBTN.onClick.AddListener(() => BuyTheGun(setupGun));
+                }
+                else
+                {
+                    ShowTakePanel();
+                }
             }
         }
     }
@@ -105,5 +119,38 @@ public class SetupManager : MonoBehaviour
     void ClearGunSlots()
     {
         ClearSlots?.Invoke();
+    }
+
+    void BuyTheGun(SetupGun gun)
+    {
+        if (MoneyManager.Instance.TotalMoney >= gun.GetComponent<Gun>().WpCost)
+        {
+            if (gun.gameObject.activeSelf)
+            {
+                gun.IsSold = true;
+                MoneyManager.Instance.TotalMoney -= gun.GetComponent<Gun>().WpCost;
+                UpdateMoneyTXT();
+                ShowTakePanel();
+            }
+
+        }
+
+    }
+
+    void UpdateMoneyTXT()
+    {
+        _moneyTXT.text = MoneyManager.Instance.TotalMoney.ToString();
+    }
+
+    void ShowTakePanel()
+    {
+        _takePanel.SetActive(true);
+        _buyPanel.SetActive(false);
+    }
+
+    void ShowBuyPanel()
+    {
+        _takePanel.SetActive(false);
+        _buyPanel.SetActive(true);
     }
 }
