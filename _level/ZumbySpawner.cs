@@ -14,11 +14,13 @@ public class ZumbySpawner : MonoBehaviour
     }
     void SpawnZumby()
     {
-        if (_levelManager.ZumbyOnLevel >= 0)
+        ZumbyMov[] zumbys = FindObjectsOfType<ZumbyMov>();
+
+        if (_levelManager.ZumbyOnLevel >= zumbys.Length)
         {
             Instantiate(_zumby, transform.position, Quaternion.identity);
-            _levelManager.ZumbyOnLevel--;
-            print(_levelManager.ZumbyOnLevel);
+            // _levelManager.ZumbyOnLevel--;
+            // print(_levelManager.ZumbyOnLevel);
         }
         else
         {
