@@ -9,6 +9,9 @@ public class HouseHealth : MonoBehaviour
     [SerializeField] Button _restartBTN;
     [SerializeField] Button _menuBTN;
 
+    LevelManager _levelManager;
+
+
     [SerializeField] float _maxHealth = 100f;
 
     float _health;
@@ -17,9 +20,12 @@ public class HouseHealth : MonoBehaviour
     {
         HealthSetUp();
 
+        _levelManager = FindObjectOfType<LevelManager>();
+
         _restartBTN.onClick.AddListener(Restart);
         _menuBTN.onClick.AddListener(ToMenu);
         _adBTN.onClick.AddListener(Rewind);
+
         _gameOverCNV.SetActive(false);
 
     }
@@ -37,28 +43,40 @@ public class HouseHealth : MonoBehaviour
         _healthSlider.value = _health;
         if (_health <= 0)
         {
-            Time.timeScale = 0;
-            _gameOverCNV.SetActive(true);
+            Loose();
 
         }
+    }
+
+    void Loose()
+    {
+        Time.timeScale = 0;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        _gameOverCNV.SetActive(true);
     }
 
     void Rewind()
     {
         Time.timeScale = 1f;
         HealthSetUp();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         _gameOverCNV.SetActive(false);
     }
 
     void ToMenu()
     {
         Time.timeScale = 1f;
+        MoneyManager.Instance.TotalMoney += _levelManager.GetMoooney();
         SceneSwitcher.Instance.SwitchScene(0);
     }
 
     void Restart()
     {
         Time.timeScale = 1f;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         SceneSwitcher.Instance.SwitchScene(2);
     }
 }
