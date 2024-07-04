@@ -16,6 +16,8 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        _levelTime = (int)(GameManager.Instance.Level * 30);
+
         _levelTimerTXT.text = _levelTime.ToString();
         InvokeRepeating("WorkTimer", 0f, 1f);
         _levelMoooneyTXT.text = _levelMoooney.ToString();
@@ -24,11 +26,17 @@ public class LevelManager : MonoBehaviour
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        Invoke(nameof(LockTheCursor), 1f);
     }
 
-    void Update()
+    void LockTheCursor()
     {
-        // Cursor.visible = true;
+        if (Cursor.visible)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void WorkTimer()
@@ -55,9 +63,25 @@ public class LevelManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0f;
+
+        Progression();
+
         _winCNV.SetActive(true);
         _doubleRewardBTN.onClick.AddListener(GetReward);
         _menuBTN.onClick.AddListener(ToMenu);
+    }
+
+    void Progression()
+    {
+        if (GameManager.Instance.Level < 3)
+        {
+            GameManager.Instance.Level += .1f;
+        }
+
+        if (GameManager.Instance.HouseHealthMultiplier < 2)
+        {
+            GameManager.Instance.HouseHealthMultiplier += .1f;
+        }
     }
 
     void GetReward()

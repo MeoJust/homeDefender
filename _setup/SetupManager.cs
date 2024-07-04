@@ -42,9 +42,26 @@ public class SetupManager : MonoBehaviour
         _gunSlots = FindObjectsOfType<GunSlot>();
 
         HideWeapons();
+
+        CheckIfIsSold();
+
         ShowWeapon(_wpIdToShow);
 
         UpdateMoneyTXT();
+    }
+
+    void CheckIfIsSold()
+    {
+        foreach (var gun in _guns)
+        {
+            foreach (var id in GunManager.Instance.BuyedGunz)
+            {
+                if (gun.WpID == id)
+                {
+                    gun.GetComponent<SetupGun>().IsSold = true;
+                }
+            }
+        }
     }
 
     void StartDaGame()
@@ -128,6 +145,7 @@ public class SetupManager : MonoBehaviour
             if (gun.gameObject.activeSelf)
             {
                 gun.IsSold = true;
+                GunManager.Instance.SetTheInventory(gun.GetComponent<Gun>().WpID);
                 MoneyManager.Instance.TotalMoney -= gun.GetComponent<Gun>().WpCost;
                 UpdateMoneyTXT();
                 ShowTakePanel();

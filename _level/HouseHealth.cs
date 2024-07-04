@@ -9,10 +9,10 @@ public class HouseHealth : MonoBehaviour
     [SerializeField] Button _restartBTN;
     [SerializeField] Button _menuBTN;
 
-    LevelManager _levelManager;
-
-
     [SerializeField] float _maxHealth = 100f;
+
+
+    LevelManager _levelManager;
 
     float _health;
 
@@ -32,6 +32,8 @@ public class HouseHealth : MonoBehaviour
 
     void HealthSetUp()
     {
+        _maxHealth = GameManager.Instance.HouseHealthMultiplier * 500f;
+
         _health = _maxHealth;
         _healthSlider.maxValue = _maxHealth;
         _healthSlider.value = _health;
