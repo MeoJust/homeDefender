@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] int _levelTime = 69;
     [SerializeField] TextMeshProUGUI _levelTimerTXT;
     [SerializeField] TextMeshProUGUI _levelMoooneyTXT;
+    [SerializeField] TextMeshProUGUI _waveNumTXT;
     [SerializeField] GameObject _winCNV;
     [SerializeField] Button _doubleRewardBTN;
     [SerializeField] Button _menuBTN;
@@ -28,6 +29,8 @@ public class LevelManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         Invoke(nameof(LockTheCursor), 1f);
+
+        _waveNumTXT.text = GameManager.Instance.Wave.ToString();
     }
 
     void LockTheCursor()
@@ -95,6 +98,7 @@ public class LevelManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         MoneyManager.Instance.TotalMoney += _levelMoooney;
+        GameManager.Instance.Wave++;
         SceneSwitcher.Instance.SwitchScene(0);
     }
 

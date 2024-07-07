@@ -6,6 +6,9 @@ public class Health : MonoBehaviour
     [SerializeField] float _maxHealth = 100f;
     [SerializeField] int _lifeCost = 10;
 
+    [SerializeField] GameObject[] _hitVFX;
+    [SerializeField] GameObject[] _hitHeadVFX;
+
     LevelManager _levelManager;
 
     Animator _animator;
@@ -18,9 +21,10 @@ public class Health : MonoBehaviour
         _levelManager = FindObjectOfType<LevelManager>();
     }
 
-    public void IsHit()
+    public void IsHit(Vector3 hitPoint)
     {
         _maxHealth -= _player.GetComponentInChildren<Gun>().Damage;
+        Instantiate(_hitVFX[Random.Range(0, _hitVFX.Length - 1)], hitPoint, Quaternion.identity);
         // print(_maxHealth);
         if (_maxHealth <= 0)
         {
@@ -28,8 +32,9 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void IsHitInHead(){
+    public void IsHitInHead(Vector3 hitPoint){
         _maxHealth -= _player.GetComponentInChildren<Gun>().Damage * 2f;
+        Instantiate(_hitHeadVFX[Random.Range(0, _hitVFX.Length - 1)], hitPoint, Quaternion.identity);
         // print("!!HEAD!!");
         // print(_maxHealth);
         if (_maxHealth <= 0)

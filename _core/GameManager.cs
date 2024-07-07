@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
     public float Level = 1f;
     public float HouseHealthMultiplier = 1f;
+    public int Wave = 1;
 
     void Awake()
     {

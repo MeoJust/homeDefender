@@ -24,7 +24,7 @@ public class ZumbySpawner : MonoBehaviour
         }
         else
         {
-            print("no more zumby");
+            // print("no more zumby");
         }
     }
 }
