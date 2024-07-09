@@ -17,18 +17,33 @@ public class GunManager : MonoBehaviour
         }
     }
 
-    public int[] BuyedGunz = new int[18];
+    public int[] BuyedGunz = new int[16];
 
     void Start()
     {
         foreach (var gun in BuyedGunz)
         {
-            print(gun);
+            // print(gun);
         }
+
+        Invoke(nameof(LoadGoonz), .25f);
     }
 
     public void SetTheInventory(int id)
     {
         BuyedGunz[id] = id;
+        SaveManager.Instance.Save();
+    }
+
+    void LoadGoonz()
+    {
+        SaveManager.Instance.GetLoad();
+
+        foreach (var gun in BuyedGunz)
+        {
+            // print(gun);
+        }
+
+        FindObjectOfType<SetupManager>().CheckIfIsSold();
     }
 }

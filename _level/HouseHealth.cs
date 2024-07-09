@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class HouseHealth : MonoBehaviour
 {
@@ -16,6 +17,18 @@ public class HouseHealth : MonoBehaviour
 
     float _health;
 
+    int _lastRewardedVideoId = -1;
+
+    void OnEnable()
+    {
+        YandexGame.CloseVideoEvent += OnRewardShown;
+    }
+
+    void OnDisable()
+    {
+        YandexGame.CloseVideoEvent -= OnRewardShown;
+    }
+
     void Start()
     {
         HealthSetUp();
@@ -24,7 +37,7 @@ public class HouseHealth : MonoBehaviour
 
         _restartBTN.onClick.AddListener(Restart);
         _menuBTN.onClick.AddListener(ToMenu);
-        _adBTN.onClick.AddListener(Rewind);
+        _adBTN.onClick.AddListener(ShowRewindAd);
 
         _gameOverCNV.SetActive(false);
 
@@ -58,13 +71,31 @@ public class HouseHealth : MonoBehaviour
         _gameOverCNV.SetActive(true);
     }
 
-    void Rewind()
+    void ShowRewindAd()
     {
-        Time.timeScale = 1f;
-        HealthSetUp();
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        _gameOverCNV.SetActive(false);
+        _lastRewardedVideoId = 1;
+        YandexGame.RewVideoShow(_lastRewardedVideoId);
+    }
+
+    void Rewind(int id)
+    {
+        if (id == 1)
+        {
+            Time.timeScale = 1f;
+            HealthSetUp();
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            _gameOverCNV.SetActive(false);
+        }
+    }
+
+    void OnRewardShown()
+    {
+        if(_lastRewardedVideoId == 1){
+             Rewind(1);
+        }
+
+        _lastRewardedVideoId = -1;
     }
 
     void ToMenu()

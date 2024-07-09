@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,6 +15,18 @@ public class LevelManager : MonoBehaviour
 
     public int ZumbyOnLevel = 10;
     int _levelMoooney = 0;
+
+    int _lastRewardedVideoId = -1;
+
+    void OnEnable()
+    {
+        YandexGame.CloseVideoEvent += OnRewardShown;
+    }
+
+    void OnDisable()
+    {
+        YandexGame.CloseVideoEvent -= OnRewardShown;
+    }
 
     void Start()
     {
@@ -70,7 +83,7 @@ public class LevelManager : MonoBehaviour
         Progression();
 
         _winCNV.SetActive(true);
-        _doubleRewardBTN.onClick.AddListener(GetReward);
+        _doubleRewardBTN.onClick.AddListener(ShowRewardAd);
         _menuBTN.onClick.AddListener(ToMenu);
     }
 
@@ -87,11 +100,29 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    void GetReward()
+    void ShowRewardAd()
     {
-        _levelMoooney *= 2;
-        _levelMoooneyTXT.text = _levelMoooney.ToString();
-        ToMenu();
+        _lastRewardedVideoId = 0;
+        YandexGame.RewVideoShow(_lastRewardedVideoId);
+    }
+
+    void GetReward(int id)
+    {
+        if (id == 0)
+        {
+            _levelMoooney *= 2;
+            _levelMoooneyTXT.text = _levelMoooney.ToString();
+            ToMenu();
+        }
+    }
+
+    void OnRewardShown()
+    {
+        if (_lastRewardedVideoId == 0)
+        {
+            GetReward(0);
+
+        }
     }
 
     void ToMenu()
@@ -99,6 +130,7 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 1f;
         MoneyManager.Instance.TotalMoney += _levelMoooney;
         GameManager.Instance.Wave++;
+        SaveManager.Instance.Save();
         SceneSwitcher.Instance.SwitchScene(0);
     }
 

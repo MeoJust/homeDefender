@@ -18,6 +18,9 @@ public class MenuManager : MonoBehaviour
         _volumeSlider.value = AudioManager.Instance.MusicVolume;
 
         _volumeSlider.onValueChanged.AddListener(SetMusicVolume);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void ToSetScene()

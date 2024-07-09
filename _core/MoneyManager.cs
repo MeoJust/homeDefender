@@ -19,4 +19,13 @@ public class MoneyManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        Invoke(nameof(LoadMoney), .25f);
+    }
+
+    void LoadMoney()
+    {
+        SaveManager.Instance.GetLoad();
+    }
 }

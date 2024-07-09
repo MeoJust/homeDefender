@@ -43,14 +43,20 @@ public class SetupManager : MonoBehaviour
 
         HideWeapons();
 
-        CheckIfIsSold();
+        // CheckIfIsSold();
+        Invoke(nameof(CheckIfIsSold), .3f);
 
         ShowWeapon(_wpIdToShow);
 
         UpdateMoneyTXT();
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        Invoke(nameof(UpdateMoneyTXT), .3f);
     }
 
-    void CheckIfIsSold()
+    public void CheckIfIsSold()
     {
         foreach (var gun in _guns)
         {
@@ -148,6 +154,7 @@ public class SetupManager : MonoBehaviour
                 GunManager.Instance.SetTheInventory(gun.GetComponent<Gun>().WpID);
                 MoneyManager.Instance.TotalMoney -= gun.GetComponent<Gun>().WpCost;
                 UpdateMoneyTXT();
+                SaveManager.Instance.Save();
                 ShowTakePanel();
             }
 
