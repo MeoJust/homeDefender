@@ -42,12 +42,22 @@ public class ZumbyMov : MonoBehaviour
         }
 
         _meshes[Random.Range(0, _meshes.Length)].SetActive(true);
+
+        InvokeRepeating("AttackAnyway", 10f, 3f);
     }
 
     void Update()
     {
         if (!_agent.enabled) return;
         if(_health.GetHealth() <= 0){ IsAlive = false; }
+
+        if(!IsAlive){
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+            _agent.enabled = false;
+            _rb.isKinematic = true;
+            return;
+        }
 
 
         _agent.SetDestination(_targetToMove.position);
@@ -83,7 +93,17 @@ public class ZumbyMov : MonoBehaviour
         {
             _houseHealth.TakeDamage(5f);
 
-            yield return new WaitForSeconds(2f); // Ожидание трех секунд
+            yield return new WaitForSeconds(2f); 
+        }
+    }
+
+    void AttackAnyway(){
+        if(!_agent.enabled){
+            return;
+        }
+
+        if(_agent.velocity.magnitude <= .5f){
+            Attack();
         }
     }
 }
