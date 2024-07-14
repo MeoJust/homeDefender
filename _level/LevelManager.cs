@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using YG;
+using GamePush;
 
 public class LevelManager : MonoBehaviour
 {
@@ -20,17 +20,19 @@ public class LevelManager : MonoBehaviour
 
     void OnEnable()
     {
-        YandexGame.CloseVideoEvent += OnRewardShown;
+        GP_Ads.OnRewardedReward += OnRewardShown;
     }
 
     void OnDisable()
     {
-        YandexGame.CloseVideoEvent -= OnRewardShown;
+        GP_Ads.OnRewardedReward -= OnRewardShown;
     }
 
     void Start()
     {
-        _levelTime = (int)(GameManager.Instance.Level * 30);
+        GameManager.Instance.Wave = GP_Player.GetInt("wave");
+
+        _levelTime = (int)(GameManager.Instance.Level * 45);
 
         _levelTimerTXT.text = _levelTime.ToString();
         InvokeRepeating("WorkTimer", 0f, 1f);
@@ -102,13 +104,12 @@ public class LevelManager : MonoBehaviour
 
     void ShowRewardAd()
     {
-        _lastRewardedVideoId = 0;
-        YandexGame.RewVideoShow(_lastRewardedVideoId);
+        GP_Ads.ShowRewarded("double");
     }
 
-    void GetReward(int id)
+    void GetReward(string id)
     {
-        if (id == 0)
+        if (id == "double")
         {
             _levelMoooney *= 2;
             _levelMoooneyTXT.text = _levelMoooney.ToString();
@@ -116,13 +117,10 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    void OnRewardShown()
+    void OnRewardShown(string id)
     {
-        if (_lastRewardedVideoId == 0)
-        {
-            GetReward(0);
-
-        }
+        if (id == "double")
+            GetReward("double");
     }
 
     void ToMenu()
@@ -130,7 +128,9 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 1f;
         MoneyManager.Instance.TotalMoney += _levelMoooney;
         GameManager.Instance.Wave++;
-        SaveManager.Instance.Save();
+        GP_Player.Set("wave", GameManager.Instance.Wave);
+        GP_Player.Set("money", MoneyManager.Instance.TotalMoney);
+        GP_Player.Sync();
         SceneSwitcher.Instance.SwitchScene(0);
     }
 

@@ -1,3 +1,4 @@
+using GamePush;
 using UnityEngine;
 
 public class MoneyManager : MonoBehaviour
@@ -21,11 +22,13 @@ public class MoneyManager : MonoBehaviour
 
     void Start()
     {
-        Invoke(nameof(LoadMoney), .25f);
+        Invoke(nameof(LoadMoney), .1f);
+
     }
 
-    void LoadMoney()
-    {
-        SaveManager.Instance.GetLoad();
+    void LoadMoney(){
+        GP_Player.Load();
+        TotalMoney = GP_Player.GetInt("money");
+        FindObjectOfType<SetupManager>().UpdateMoneyTXT();
     }
 }

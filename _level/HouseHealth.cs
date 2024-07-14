@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using YG;
+using GamePush;
 
 public class HouseHealth : MonoBehaviour
 {
@@ -17,16 +17,14 @@ public class HouseHealth : MonoBehaviour
 
     float _health;
 
-    int _lastRewardedVideoId = -1;
-
     void OnEnable()
     {
-        YandexGame.CloseVideoEvent += OnRewardShown;
+        GP_Ads.OnRewardedReward += OnRewardShown;
     }
 
     void OnDisable()
     {
-        YandexGame.CloseVideoEvent -= OnRewardShown;
+        GP_Ads.OnRewardedReward -= OnRewardShown;
     }
 
     void Start()
@@ -73,13 +71,12 @@ public class HouseHealth : MonoBehaviour
 
     void ShowRewindAd()
     {
-        _lastRewardedVideoId = 1;
-        YandexGame.RewVideoShow(_lastRewardedVideoId);
+        GP_Ads.ShowRewarded("rewind");
     }
 
-    void Rewind(int id)
+    void Rewind(string id)
     {
-        if (id == 1)
+        if (id == "rewind")
         {
             Time.timeScale = 1f;
             HealthSetUp();
@@ -89,13 +86,12 @@ public class HouseHealth : MonoBehaviour
         }
     }
 
-    void OnRewardShown()
+    void OnRewardShown(string id)
     {
-        if(_lastRewardedVideoId == 1){
-             Rewind(1);
+        if(id == "rewind"){
+             Rewind("rewind");
         }
 
-        _lastRewardedVideoId = -1;
     }
 
     void ToMenu()

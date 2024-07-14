@@ -32,13 +32,10 @@ public class GunManager : MonoBehaviour
     public void SetTheInventory(int id)
     {
         BuyedGunz[id] = id;
-        SaveManager.Instance.Save();
     }
 
     void LoadGoonz()
     {
-        SaveManager.Instance.GetLoad();
-
         foreach (var gun in BuyedGunz)
         {
             // print(gun);

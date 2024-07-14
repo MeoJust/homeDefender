@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using GamePush;
 
 public class SetupManager : MonoBehaviour
 {
@@ -54,6 +55,12 @@ public class SetupManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         Invoke(nameof(UpdateMoneyTXT), .3f);
+
+        ShowFullScreenAd();
+    }
+
+    void ShowFullScreenAd(){
+        GP_Ads.ShowFullscreen();
     }
 
     public void CheckIfIsSold()
@@ -154,7 +161,6 @@ public class SetupManager : MonoBehaviour
                 GunManager.Instance.SetTheInventory(gun.GetComponent<Gun>().WpID);
                 MoneyManager.Instance.TotalMoney -= gun.GetComponent<Gun>().WpCost;
                 UpdateMoneyTXT();
-                SaveManager.Instance.Save();
                 ShowTakePanel();
             }
 
@@ -162,7 +168,7 @@ public class SetupManager : MonoBehaviour
 
     }
 
-    void UpdateMoneyTXT()
+    public void UpdateMoneyTXT()
     {
         _moneyTXT.text = MoneyManager.Instance.TotalMoney.ToString();
     }

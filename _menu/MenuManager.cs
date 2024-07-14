@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using GamePush;
 
 public class MenuManager : MonoBehaviour
 {
@@ -21,6 +22,13 @@ public class MenuManager : MonoBehaviour
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        ShowFullScreenAd();
+    }
+
+    void ShowFullScreenAd()
+    {
+        GP_Ads.ShowFullscreen();
     }
 
     void ToSetScene()
