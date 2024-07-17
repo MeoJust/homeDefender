@@ -1,4 +1,5 @@
 using UnityEngine;
+using GamePush;
 
 public class GunManager : MonoBehaviour
 {
@@ -23,8 +24,9 @@ public class GunManager : MonoBehaviour
     {
         foreach (var gun in BuyedGunz)
         {
-            // print(gun);
+            //print(gun);
         }
+
 
         Invoke(nameof(LoadGoonz), .25f);
     }
@@ -32,6 +34,7 @@ public class GunManager : MonoBehaviour
     public void SetTheInventory(int id)
     {
         BuyedGunz[id] = id;
+        GP_Player.Set($"wpIds{id}", id);
     }
 
     void LoadGoonz()
